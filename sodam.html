@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>소담이네 컬쳐덱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --moss: #5B7553;
+    --moss-light: #8AA17F;
+    --moss-dark: #3F5639;
+    --sage: #708B5C;
+    --wood: #8B6F47;
+    --wood-light: #B69372;
+    --beige: #DCC9A6;
+    --beige-light: #E8DCC0;
+    --cream: #F5EFE0;
+    --cream-light: #FBF7EC;
+    --cream-dark: #EFE7D2;
+    --charcoal: #2D3A2A;
+    --text-soft: #4A5A45;
+    --text-muted: #7A8676;
+    --shadow-sm: 0 2px 8px rgba(45, 58, 42, 0.04);
+    --shadow: 0 6px 24px rgba(45, 58, 42, 0.07);
+    --shadow-md: 0 10px 36px rgba(45, 58, 42, 0.1);
+    --shadow-lg: 0 16px 56px rgba(45, 58, 42, 0.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    color: var(--charcoal);
+    background:
+      radial-gradient(ellipse 1200px 800px at 80% -10%, rgba(112, 139, 92, 0.08), transparent 60%),
+      radial-gradient(ellipse 900px 700px at -10% 110%, rgba(139, 111, 71, 0.07), transparent 60%),
+      linear-gradient(180deg, #F5EFE0 0%, #FBF7EC 60%, #F2EBD9 100%);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+  }
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 6vh 7vw 10vh;
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity .5s ease, transform .5s ease;
+    pointer-events: none;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  .slide.prev { transform: translateX(-40px); }
+  .slide-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+  }
+
+  /* === Typography === */
+  h1, h2, h3, h4 {
+    font-family: 'Nanum Myeongjo', 'Noto Serif KR', serif;
+    color: var(--charcoal);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  h1 {
+    font-size: clamp(32px, 4.4vw, 52px);
+    font-weight: 800;
+    margin-bottom: 0.6em;
+    position: relative;
+  }
+  h1::after {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 2px;
+    background: var(--moss);
+    margin-top: 0.5em;
+    border-radius: 2px;
+  }
+  h2 {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 700;
+    margin-bottom: .8em;
+    color: var(--moss-dark);
+  }
+  h3 {
+    font-size: clamp(17px, 2vw, 21px);
+    font-weight: 700;
+    margin: 1.6em 0 .7em;
+    color: var(--moss-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h3::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: var(--moss);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  h4 {
+    font-size: 16px;
+    margin: 0 0 .5em;
+    color: var(--moss-dark);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  p { margin-bottom: .9em; font-size: 15.5px; color: var(--text-soft); }
+  p strong { color: var(--charcoal); font-weight: 700; }
+  .lead {
+    font-size: clamp(16px, 1.6vw, 18px);
+    color: var(--text-soft);
+    line-height: 1.75;
+    margin-bottom: 1.5em;
+    max-width: 780px;
+  }
+  ul, ol { padding-left: 22px; margin-bottom: 1em; }
+  li {
+    margin-bottom: .4em;
+    color: var(--text-soft);
+    font-size: 15px;
+  }
+  ul li::marker { color: var(--moss); }
+  ol li::marker { color: var(--wood); font-weight: 700; }
+
+  a { color: var(--moss); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--beige), transparent);
+    margin: 2em 0;
+  }
+
+  /* === Section tag === */
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    color: var(--wood);
+    text-transform: uppercase;
+    margin-bottom: 1.2em;
+    padding: 6px 14px;
+    background: rgba(139, 111, 71, 0.08);
+    border-radius: 999px;
+    border: 1px solid rgba(139, 111, 71, 0.18);
+  }
+  .section-tag::before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B6F47' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s-7-4.5-7-11a7 7 0 0 1 14 0c0 6.5-7 11-7 11z'/><path d='M12 11v11'/></svg>") no-repeat center / contain;
+    flex-shrink: 0;
+  }
+
+  /* === Blockquote === */
+  blockquote {
+    position: relative;
+    padding: 1.2em 1.6em;
+    margin: 1.4em 0;
+    color: var(--text-soft);
+    font-style: italic;
+    background: rgba(245, 239, 224, 0.55);
+    border-left: 3px solid var(--moss);
+    border-radius: 4px;
+  }
+  blockquote.big {
+    font-family: 'Nanum Myeongjo', 'Noto Serif KR', serif;
+    font-size: clamp(17px, 2.1vw, 22px);
+    font-style: normal;
+    color: var(--charcoal);
+    background: linear-gradient(135deg, rgba(245, 239, 224, 0.7), rgba(251, 247, 236, 0.9));
+    border: 1px solid var(--beige);
+    border-left: 4px solid var(--wood);
+    padding: 1.4em 1.8em 1.4em 2.4em;
+    line-height: 1.7;
+    box-shadow: var(--shadow-sm);
+  }
+  blockquote.big::before {
+    content: "\201C";
+    position: absolute;
+    top: 0.05em;
+    left: 0.35em;
+    font-family: 'EB Garamond', serif;
+    font-size: 4em;
+    color: var(--wood-light);
+    opacity: 0.45;
+    line-height: 1;
+    pointer-events: none;
+  }
+  blockquote.center {
+    text-align: center;
+    border-left: none;
+    border-top: 2px solid var(--wood);
+    border-bottom: 2px solid var(--wood);
+    border-radius: 0;
+    padding: 1.6em 2em;
+  }
+  blockquote.center::before { display: none; }
+
+  /* === Tables === */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0 1.4em;
+    font-size: 14.5px;
+    background: rgba(251, 247, 236, 0.5);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  th, td {
+    text-align: left;
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(139, 111, 71, 0.12);
+    vertical-align: top;
+    color: var(--text-soft);
+  }
+  tr:last-child th, tr:last-child td { border-bottom: none; }
+  th {
+    color: var(--moss-dark);
+    font-weight: 700;
+    background: rgba(220, 201, 166, 0.18);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    width: 28%;
+  }
+  td strong { color: var(--charcoal); font-weight: 700; }
+  tr:hover td, tr:hover th { background: rgba(220, 201, 166, 0.1); }
+
+  /* === Index list === */
+  .index-list {
+    background: transparent;
+    box-shadow: none;
+  }
+  .index-list tr td {
+    border-bottom: 1px solid rgba(139, 111, 71, 0.12);
+    padding: 18px 16px;
+  }
+  .index-list .num {
+    font-family: 'EB Garamond', serif;
+    font-size: 28px;
+    color: var(--wood);
+    font-weight: 500;
+    width: 70px;
+  }
+  .index-list .en {
+    font-family: 'EB Garamond', serif;
+    color: var(--moss-dark);
+    font-size: 19px;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  /* === Cover slide === */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    padding: 0 6vw;
+    position: relative;
+  }
+  .cover .ornament {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 1em;
+  }
+  .cover .ornament .line {
+    width: 60px;
+    height: 1px;
+    background: var(--wood);
+    opacity: 0.5;
+  }
+  .cover .ornament .leaf {
+    color: var(--moss);
+    width: 18px;
+    height: 18px;
+  }
+  .cover .logo {
+    width: clamp(200px, 26vw, 300px);
+    margin-bottom: 1.2em;
+    filter: drop-shadow(0 4px 16px rgba(91, 117, 83, 0.12));
+  }
+  .cover .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(11px, 1.1vw, 13px);
+    letter-spacing: 6px;
+    color: var(--wood);
+    text-transform: uppercase;
+    margin-bottom: 1em;
+    font-weight: 500;
+  }
+  .cover h1 {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(40px, 6.5vw, 78px);
+    font-weight: 800;
+    color: var(--charcoal);
+    margin-bottom: .25em;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .cover h1::after { display: none; }
+  .cover .subtitle {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    color: var(--moss-dark);
+    font-size: clamp(16px, 2vw, 22px);
+    margin-bottom: 1.8em;
+    letter-spacing: 1px;
+  }
+  .cover .slogan {
+    font-family: 'Nanum Myeongjo', serif;
+    color: var(--wood);
+    font-size: clamp(15px, 1.8vw, 19px);
+    margin-bottom: 2.5em;
+    font-style: italic;
+  }
+  .cover .est {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--wood);
+    opacity: 0.8;
+    padding-top: 1em;
+    border-top: 1px solid var(--beige);
+    text-transform: uppercase;
+  }
+  .cover .est strong { font-weight: 600; color: var(--moss-dark); letter-spacing: 2px; }
+
+  /* === Photo gallery === */
+  .photo {
+    margin: 1.6em 0 2em;
+  }
+  .photo img {
+    width: 100%;
+    max-height: 65vh;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    transition: transform .3s ease;
+  }
+  .photo img:hover { transform: scale(1.005); }
+  .photo .cap {
+    margin-top: .9em;
+    font-family: 'Nanum Myeongjo', serif;
+    font-style: italic;
+    color: var(--text-soft);
+    font-size: 14.5px;
+    text-align: center;
+    line-height: 1.6;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .photo .num-badge {
+    display: inline-block;
+    font-family: 'EB Garamond', serif;
+    color: var(--wood);
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: .5em;
+  }
+
+  /* === Color palette === */
+  .palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    margin: 1.2em 0;
+  }
+  .swatch {
+    border-radius: 12px;
+    padding: 18px 16px;
+    color: var(--cream);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
+    transition: transform .25s ease, box-shadow .25s ease;
+    aspect-ratio: 1.4 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .swatch:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .swatch.light { color: var(--charcoal); }
+  .swatch .name { font-family: 'Nanum Myeongjo', serif; font-size: 15px; font-weight: 700; }
+  .swatch .hex {
+    font-family: 'Inter', monospace;
+    letter-spacing: 1.5px;
+    font-size: 12px;
+    opacity: 0.85;
+    font-weight: 400;
+  }
+
+  /* === Cards === */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2em;
+    margin: 1em 0 1.5em;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1em;
+    margin: 1em 0 1.5em;
+  }
+  .card {
+    background: linear-gradient(140deg, rgba(251, 247, 236, 0.95), rgba(245, 239, 224, 0.6));
+    border: 1px solid var(--beige);
+    border-radius: 14px;
+    padding: 1.4em 1.5em;
+    box-shadow: var(--shadow-sm);
+    transition: transform .25s ease, box-shadow .25s ease;
+    position: relative;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .card h4 { margin-top: 0; color: var(--moss-dark); }
+  .card p { font-size: 14.5px; }
+  .card ul { padding-left: 18px; margin-bottom: 0; }
+  .card ul li { font-size: 14px; }
+  .card em.hint {
+    display: block;
+    margin-top: .8em;
+    padding-top: .8em;
+    border-top: 1px dashed var(--beige);
+    color: var(--wood);
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 13.5px;
+    font-style: italic;
+  }
+
+  /* === Value cards (special) === */
+  .value-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2em;
+    margin: 1.5em 0;
+  }
+  .value-card {
+    background: linear-gradient(160deg, rgba(251, 247, 236, 0.95), rgba(245, 239, 224, 0.5));
+    border: 1px solid var(--beige);
+    border-radius: 16px;
+    padding: 1.6em 1.5em;
+    position: relative;
+    overflow: hidden;
+    transition: transform .3s ease, box-shadow .3s ease;
+    box-shadow: var(--shadow-sm);
+  }
+  .value-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .value-card .num {
+    position: absolute;
+    top: -8px;
+    right: 14px;
+    font-family: 'EB Garamond', serif;
+    font-size: 88px;
+    font-weight: 500;
+    color: rgba(91, 117, 83, 0.08);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .value-card .name {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+  }
+  .value-card .name-en {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    color: var(--wood);
+    font-size: 14px;
+    margin-bottom: 0.8em;
+    display: block;
+  }
+  .value-card .meaning {
+    color: var(--moss-dark);
+    font-size: 14.5px;
+    margin-bottom: 0.9em;
+    padding-bottom: 0.9em;
+    border-bottom: 1px solid var(--beige);
+    line-height: 1.6;
+  }
+  .value-card ul { padding-left: 18px; margin: 0; }
+  .value-card ul li { font-size: 13.5px; line-height: 1.6; margin-bottom: 4px; }
+
+  /* === Accent box === */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(91, 117, 83, 0.06), rgba(139, 111, 71, 0.04));
+    border: 1px solid rgba(91, 117, 83, 0.18);
+    border-radius: 14px;
+    padding: 1.4em 1.6em;
+    margin: 1.4em 0;
+  }
+  .highlight-box h4 {
+    margin-top: 0;
+    color: var(--moss-dark);
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 17px;
+  }
+
+  /* === Promise list === */
+  .promise-list {
+    list-style: none;
+    padding: 0;
+    margin: 1em 0;
+  }
+  .promise-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    background: rgba(251, 247, 236, 0.7);
+    border: 1px solid var(--beige);
+    border-radius: 10px;
+    color: var(--charcoal);
+    font-size: 15px;
+    line-height: 1.6;
+    transition: transform .2s ease, border-color .2s ease;
+  }
+  .promise-list li:hover { transform: translateX(2px); border-color: var(--moss-light); }
+  .promise-list .num {
+    font-family: 'EB Garamond', serif;
+    color: var(--wood);
+    font-size: 22px;
+    font-weight: 600;
+    flex-shrink: 0;
+    line-height: 1.2;
+    min-width: 28px;
+  }
+
+  /* === Big slogan === */
+  .big-slogan {
+    text-align: center;
+    padding: 2em 1em;
+    margin: 1em 0;
+  }
+  .big-slogan .quote {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    color: var(--charcoal);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .big-slogan .meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--wood);
+    text-transform: uppercase;
+    margin-top: 1.2em;
+  }
+  .big-slogan .ornament {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin: 1em 0;
+  }
+  .big-slogan .ornament .line {
+    width: 80px;
+    height: 1px;
+    background: var(--wood);
+    opacity: 0.5;
+  }
+  .big-slogan .ornament .dot {
+    width: 5px;
+    height: 5px;
+    background: var(--wood);
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+
+  /* === Closing === */
+  .closing {
+    text-align: center;
+    padding-top: 6vh;
+  }
+  .closing .small-logo {
+    width: 90px;
+    margin: 0 auto 2em;
+    opacity: 0.85;
+  }
+  .closing .farewell {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(18px, 2.4vw, 24px);
+    color: var(--text-soft);
+    line-height: 1.85;
+    max-width: 720px;
+    margin: 0 auto 2.5em;
+  }
+  .closing .farewell strong { color: var(--charcoal); }
+  .closing .signature {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(24px, 3.4vw, 36px);
+    color: var(--moss-dark);
+    font-weight: 700;
+    font-style: italic;
+    margin: 1.5em 0 0.8em;
+  }
+  .closing .author {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    color: var(--wood);
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+  .closing .meta-table {
+    max-width: 480px;
+    margin: 3em auto 0;
+    text-align: left;
+    background: transparent;
+    box-shadow: none;
+    font-size: 14px;
+  }
+  .closing .meta-table th {
+    background: transparent;
+    color: var(--wood);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    width: 40%;
+  }
+
+  /* === Navigation === */
+  .nav {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(251, 247, 236, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--beige);
+    border-radius: 999px;
+    padding: 6px 8px;
+    box-shadow: var(--shadow);
+    z-index: 100;
+  }
+  .nav button {
+    background: transparent;
+    border: none;
+    color: var(--moss-dark);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 999px;
+    transition: background .2s, color .2s;
+    line-height: 1;
+    font-family: 'Inter', sans-serif;
+  }
+  .nav button:hover { background: var(--beige); color: var(--charcoal); }
+  .nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav .counter {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--wood);
+    letter-spacing: 1.5px;
+    min-width: 70px;
+    text-align: center;
+    font-weight: 500;
+    padding: 0 8px;
+    border-left: 1px solid var(--beige);
+    border-right: 1px solid var(--beige);
+  }
+
+  /* === Progress bar === */
+  .progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--moss-dark), var(--moss), var(--moss-light));
+    transition: width .4s ease;
+    z-index: 99;
+    box-shadow: 0 0 12px rgba(91, 117, 83, 0.3);
+  }
+
+  /* === Hint === */
+  .hint {
+    position: fixed;
+    top: 18px;
+    right: 22px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--wood);
+    letter-spacing: 1.5px;
+    opacity: 0.7;
+    z-index: 99;
+    background: rgba(251, 247, 236, 0.7);
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(220, 201, 166, 0.5);
+  }
+
+  /* === Scrollbar === */
+  .slide::-webkit-scrollbar { width: 8px; }
+  .slide::-webkit-scrollbar-track { background: transparent; }
+  .slide::-webkit-scrollbar-thumb {
+    background: var(--beige);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  .slide::-webkit-scrollbar-thumb:hover { background: var(--wood-light); background-clip: padding-box; border: 2px solid transparent; }
+
+  /* === Mobile === */
+  @media (max-width: 700px) {
+    .slide { padding: 5vh 6vw 12vh; }
+    table { font-size: 13px; }
+    th { width: 32%; }
+    th, td { padding: 10px 12px; }
+    .palette { grid-template-columns: repeat(2, 1fr); }
+    .nav { gap: 4px; padding: 5px 6px; }
+    .nav button { padding: 6px 10px; }
+    .nav .counter { min-width: 50px; font-size: 11px; padding: 0 4px; }
+    blockquote.big { padding: 1.2em 1.4em 1.2em 2em; }
+    blockquote.big::before { font-size: 3em; }
+  }
+
+  /* === Print === */
+  @media print {
+    .nav, .hint, .progress { display: none; }
+    .slide {
+      position: relative;
+      opacity: 1;
+      transform: none;
+      page-break-after: always;
+      height: auto;
+      overflow: visible;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="hint">← → 또는 스와이프</div>
+
+<div class="deck" id="deck">
+
+<!-- ===== Slide 1: Cover ===== -->
+<section class="slide active">
+  <div class="cover">
+    <div class="eyebrow">Family Culture Deck</div>
+    <img src="소담이네_로고_시안A_잎사귀.svg" alt="소담이네 로고" class="logo">
+    <h1>소담이네</h1>
+    <div class="subtitle">우리에게 알맞은 일상을 풍성히 누리는 가족</div>
+    <div class="ornament">
+      <span class="line"></span>
+      <svg class="leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-2.6 1-5 3-7 2 2 7 5 7 11 0 1-.3 2-.7 3"/><path d="M11 20c.7-2.5 3-7 9-9"/></svg>
+      <span class="line"></span>
+    </div>
+    <div class="slogan">"작은 순간, 큰 행복"</div>
+    <div class="est">
+      <span>EST.</span>
+      <strong>2023 · 10 · 15</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 2: 들어가며 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">Prologue</span>
+    <h1>들어가며</h1>
+    <p class="lead">왜 우리 집에 컬쳐덱이 필요한가</p>
+
+    <p>컬쳐덱은 원래 회사가 <strong>"우리는 누구이고, 어떻게 일하는가"</strong>를 글로 정리한 문서다. 픽사메이커스, 넷플릭스 같은 회사들은 이 문서로 채용·평가·의사결정의 기준을 만든다.</p>
+    <p>가정도 하나의 조직이다. 그런데 대부분의 가정은 명시적인 가치 체계 없이 운영된다. 그 결과 의사결정이 매번 흔들리고, 자녀가 부모의 가치관을 추측해야 하며, 위기 상황에서 합의된 원칙이 없다.</p>
+
+    <h3>우리 집 컬쳐덱이 가져다 줄 것</h3>
+    <div class="grid-3">
+      <div class="card">
+        <h4>① 정체성</h4>
+        <p>"우리 집은 ○○한 가족이다"라는 한 문장으로 가족이 묶인다.</p>
+      </div>
+      <div class="card">
+        <h4>② 의사결정 기준</h4>
+        <p>진로·돈·교육·관계의 기준이 즉답 가능해진다.</p>
+      </div>
+      <div class="card">
+        <h4>③ 세대 자산</h4>
+        <p>자녀가 결혼·독립할 때 가져갈 가족의 무형 자산이 된다.</p>
+      </div>
+    </div>
+
+    <h3>작성 원칙</h3>
+    <table>
+      <tr><th>솔직하게</th><td>이상이 아니라 우리가 실제로 사는 모습을 쓴다</td></tr>
+      <tr><th>구체적으로</th><td>추상적 가치 대신 행동 사례를 함께 적는다</td></tr>
+      <tr><th>함께</th><td>한 명이 아니라 가족 모두가 의견을 낸다</td></tr>
+      <tr><th>살아있게</th><td>1년에 한 번 업데이트한다</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== Slide 3: 목차 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">Index</span>
+    <h1>목차</h1>
+    <p class="lead">소담이네 컬쳐덱은 7개 챕터로 구성된다.</p>
+
+    <table class="index-list">
+      <tr><td class="num">01</td><td><strong>Launch</strong> <span class="en">— 우리 가족이 존재하는 이유</span></td></tr>
+      <tr><td class="num">02</td><td><strong>Identity</strong> <span class="en">— 가족명, 슬로건, 미션, 비전, 핵심가치</span></td></tr>
+      <tr><td class="num">03</td><td><strong>Life Domains</strong> <span class="en">— 가족이 가꾸는 영역</span></td></tr>
+      <tr><td class="num">04</td><td><strong>Members</strong> <span class="en">— 우리는 누구인가</span></td></tr>
+      <tr><td class="num">05</td><td><strong>The Way</strong> <span class="en">— 우리가 살아가는 방식</span></td></tr>
+      <tr><td class="num">06</td><td><strong>Rules &amp; Rituals</strong> <span class="en">— 우리 집의 약속과 의례</span></td></tr>
+      <tr><td class="num">07</td><td><strong>Design System</strong> <span class="en">— 우리 집의 상징</span></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== Slide 4: 01 Launch — 시작 이야기 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">01 · Launch</span>
+    <h1>시작 이야기</h1>
+    <p class="lead">우리는 양가 어른들의 소개로 만났다.</p>
+
+    <table>
+      <tr><th>첫 만남</th><td>2023년 2월 15일</td></tr>
+      <tr><th>결혼식</th><td>2023년 10월 15일</td></tr>
+      <tr><th>장소</th><td>대부도 풀빌라 2채</td></tr>
+      <tr><th>기간</th><td>1박 2일</td></tr>
+      <tr><th>초대 손님</th><td>양가 직계가족과 가까운 친척, 약 30명</td></tr>
+      <tr><th>사회</th><td>신부 최선아의 남동생</td></tr>
+    </table>
+
+    <blockquote class="big">
+      우리는 의미있는 방식의 결혼식을 원했다. 그래서 형식보다 본질을 택했다.<br><br>
+      "결혼은 끝이 아니라 또 다른 시작" 이라는 것을 둘 다 알고 있었고, 서로라면 잘해낼 수 있다는 확신이 있었다.
+    </blockquote>
+  </div>
+</section>
+
+<!-- ===== Slide 5: 결혼식 사진 갤러리 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">01 · Launch</span>
+    <h1>우리의 첫 페이지</h1>
+    <p class="lead">2023년 10월, 대부도. 우리의 시작을 함께한 사람들.</p>
+
+    <div class="photo">
+      <div class="num-badge">N° 01</div>
+      <img src="wedding_01.jpg" alt="결혼식 단체사진">
+      <div class="cap">대부도 풀빌라, 양가 직계가족과 가까운 친척 30명. 우리의 시작을 함께한 사람들.</div>
+    </div>
+    <div class="photo">
+      <div class="num-badge">N° 02</div>
+      <img src="wedding_02.jpg" alt="양가 부모님과 함께">
+      <div class="cap">양가 부모님과 함께 — 두 가족이 한 가족으로 묶이는 순간.</div>
+    </div>
+    <div class="photo">
+      <div class="num-badge">N° 03</div>
+      <img src="wedding_03.jpg" alt="처남의 사회와 조카의 반지 봉헌">
+      <div class="cap">처남이 사회를 보고, 조카가 결혼반지를 들고 나오던 장면.<br>형식이 아닌 가족 모두가 함께 만든 우리만의 결혼식이었다.</div>
+    </div>
+    <div class="photo">
+      <div class="num-badge">N° 04</div>
+      <img src="wedding_04.jpg" alt="결혼식 부부사진">
+      <div class="cap">"앞으로의 여정도 서로를 바라보며 이어나가자."</div>
+    </div>
+    <div class="photo">
+      <div class="num-badge">N° 05</div>
+      <img src="wedding_05.jpg" alt="제주 엘리시안 발코니">
+      <div class="cap">신혼여행지 제주도 엘리시안 리조트 발코니.<br>매년 여름·결혼기념일에 다시 돌아올 우리만의 장소.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 6: 존재 이유 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">01 · Launch</span>
+    <h1>존재 이유</h1>
+    <p class="lead">우리 부부는 같은 곳을 보고 있지만, 표현은 조금 다르다. 이 다름이 우리 가족의 풍부함이다.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>김중렬의 답</h4>
+        <p>서로의 부족함을 채워주고, <strong>서로가 더 나은 사람이 되기 위해서.</strong></p>
+      </div>
+      <div class="card">
+        <h4>최선아의 답</h4>
+        <p>서로를 통해 더 좋은 사람이 되기 위해서, 그리고 <strong>각자가 상대방의 품 안에서 가장 자연스러운 나로 살아가기 위해서.</strong></p>
+      </div>
+    </div>
+
+    <blockquote class="big center">
+      우리는 서로의 부족함을 채우며 더 나은 사람이 되고,<br>
+      동시에 상대방의 품 안에서 가장 자연스러운 자기 자신으로 살아가기 위해 함께 산다.
+    </blockquote>
+
+    <p>이 두 가지는 모순이 아니다. <strong>더 나아지려는 노력</strong>과 <strong>있는 그대로 머물 수 있는 안전함</strong>은 함께 있을 때만 가능하다.</p>
+  </div>
+</section>
+
+<!-- ===== Slide 7: 행복 정의 + 충만한 순간 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">01 · Launch</span>
+    <h1>우리의 행복</h1>
+    <blockquote class="big">
+      행복이란, 마음이 충만하게 차오르는 순간들이다.<br>
+      그리고 그 순간들을 지속적으로 우리 가정과 삶에서 느끼는 것이다.
+    </blockquote>
+    <p>이 정의가 우리 모든 결정의 기준이 된다. 어떤 선택 앞에서 우리는 묻는다 — <strong>"이것이 우리 마음을 충만하게 하는가?"</strong></p>
+
+    <h3>우리에게 충만한 순간 — 8가지 장면</h3>
+    <table>
+      <tr><th>함께 걷기</th><td>같이 산책하며 소소한 이야기를 나눌 때</td></tr>
+      <tr><th>함께 걷기</th><td>해질녘 미사리 한강변 뚝방길을 걸을 때</td></tr>
+      <tr><th>가족과의 시간</th><td>양가 가족들과 즐거운 시간을 보내고 돌아오는 길</td></tr>
+      <tr><th>평일 저녁의 의례</th><td>퇴근 후 맛있는 것을 먹으며 좋아하는 TV(나는 솔로, 이혼숙려캠프)를 같이 볼 때</td></tr>
+      <tr><th>매년의 약속</th><td>여름 휴가, 제주도 엘리시안 리조트 테라스에서 함께 시간을 보낼 때</td></tr>
+      <tr><th>운동 후 보상</th><td>같이 운동을 하고 난 뒤</td></tr>
+      <tr><th>운동 후 보상</th><td>검단산 등산 후 유천냉면의 물냉면을 먹을 때</td></tr>
+      <tr><th>자연·햇살</th><td>햇살 좋은 날 조정경기장에서 햇빛샤워 할 때</td></tr>
+    </table>
+
+    <div class="highlight-box">
+      <p style="margin:0;">이 장면들은 모두 <strong>돈이 많이 들지 않는다.</strong> 우리에게 행복은 <strong>소박한 일상에서 차곡차곡 소담히 쌓이는 것</strong>이다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 8: 02 Identity — About + 한 줄 정의 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">02 · Identity</span>
+    <h1>우리 집의 정체성</h1>
+    <p class="lead">소담이네는 누구인가 — 가족명·정의·슬로건·미션·비전을 한 자리에 모았다.</p>
+
+    <h3>About Us</h3>
+    <table>
+      <tr><th>가족명</th><td><strong>소담이네</strong> <em style="color: var(--wood);">(소담하다 = 작지만 보기에 탐스럽고 풍성하다)</em></td></tr>
+      <tr><th>시작일</th><td>2023년 10월 15일</td></tr>
+      <tr><th>구성</th><td>남편 김중렬 · 아내 최선아</td></tr>
+      <tr><th>거주지</th><td>경기도 하남시</td></tr>
+      <tr><th>주 활동 무대</th><td>검단산 · 미사리 한강변 · 조정경기장 — 자연과 함께하는 일상</td></tr>
+    </table>
+
+    <h3>소담이네 한 줄 정의</h3>
+    <div class="big-slogan">
+      <div class="ornament">
+        <span class="line"></span>
+        <span class="dot"></span>
+        <span class="line"></span>
+      </div>
+      <div class="quote">"우리는 우리에게 알맞은 일상을<br>풍성히 누리는 가족이다."</div>
+      <div class="meta">Family Definition</div>
+    </div>
+    <p style="text-align:center; max-width: 720px; margin: 0 auto 1.5em;">
+      "소담"의 핵심은 크고 작음의 비교가 아니라 <strong>밀도</strong>다.<br>
+      사회가 정한 축에 우리를 맞추는 대신, 우리에게 알맞은 그릇 안을 충만하게 채우며 사는 것 — 그것이 소담이네의 본질이다.
+    </p>
+  </div>
+</section>
+
+<!-- ===== Slide 9: Slogan + Mission + Vision ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">02 · Identity</span>
+    <h1>슬로건 · 미션 · 비전</h1>
+
+    <h3>Slogan</h3>
+    <div class="big-slogan">
+      <div class="quote" style="color: var(--wood);">"작은 순간, 큰 행복"</div>
+      <div class="meta">Family Slogan</div>
+    </div>
+
+    <h3>Mission — 우리는 왜 함께 사는가</h3>
+    <blockquote class="big">
+      소담이네는 서로의 부족함을 채우며 더 나은 사람이 되고,<br>
+      동시에 상대방의 품 안에서 가장 자연스러운 자기 자신으로 살아가기 위해 함께 산다.
+    </blockquote>
+
+    <h3>Vision — 10년 뒤의 모습</h3>
+    <blockquote class="big">
+      자연 가까운 곳에서 경제적으로 안정된 일상을 누리며,<br>
+      자녀 유무와 관계없이 두 사람 모두 몸과 마음이 건강한 부부로 함께 살아간다.
+    </blockquote>
+    <div class="grid-3">
+      <div class="card">
+        <h4>① 자연 속 삶</h4>
+        <p>검단산·미사리·조정경기장이 일상에 있는 곳, 또는 더 자연 가까운 곳에서 산다.</p>
+      </div>
+      <div class="card">
+        <h4>② 경제적 안정</h4>
+        <p>큰 부자가 아니라, "오늘도 소담하게" 살 수 있는 안정된 기반.</p>
+      </div>
+      <div class="card">
+        <h4>③ 건강한 부부</h4>
+        <p>자녀가 있든 없든, 두 사람 자체로 완전한 건강한 관계를 유지한다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 10: 핵심가치 5가지 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">02 · Identity</span>
+    <h1>핵심가치 5가지</h1>
+    <p class="lead">소담이네가 가장 중요하게 여기는 다섯 가지 가치. 추상적 의미가 아니라 실제 행동으로 증명된다.</p>
+
+    <div class="value-grid">
+      <div class="value-card">
+        <span class="num">1</span>
+        <div class="name">소담함</div>
+        <span class="name-en">Modest Fullness</span>
+        <p class="meaning">작지만 풍성하게 누리는 일상의 가치</p>
+        <ul>
+          <li>비싼 것보다 의미있는 것을 선택</li>
+          <li>작은 순간을 놓치지 않고 기념</li>
+          <li>"더 가지기"보다 "지금 가진 것을 충분히 누리기"</li>
+        </ul>
+      </div>
+      <div class="value-card">
+        <span class="num">2</span>
+        <div class="name">자연스러움</div>
+        <span class="name-en">Authenticity</span>
+        <p class="meaning">상대방의 품 안에서 가장 나다운 모습으로 산다</p>
+        <ul>
+          <li>꾸미지 않은 모습으로 함께 있을 수 있음</li>
+          <li>의견이 달라도 솔직히 말함</li>
+          <li>사회의 시선보다 우리의 기준으로 결정</li>
+        </ul>
+      </div>
+      <div class="value-card">
+        <span class="num">3</span>
+        <div class="name">함께 자람</div>
+        <span class="name-en">Growing Together</span>
+        <p class="meaning">서로의 부족함을 채우며 더 나은 사람이 된다</p>
+        <ul>
+          <li>상대의 성장에 시간·돈을 투자</li>
+          <li>정기적으로 서로의 변화에 대해 대화</li>
+          <li>한 명만 앞서가지 않도록 속도를 맞춤</li>
+        </ul>
+      </div>
+      <div class="value-card">
+        <span class="num">4</span>
+        <div class="name">일상의 리추얼</div>
+        <span class="name-en">Daily Ritual</span>
+        <p class="meaning">매일·매주·매년 반복되는 작은 의례를 지킨다</p>
+        <ul>
+          <li>매년 여름 제주 엘리시안</li>
+          <li>등산 후 유천냉면</li>
+          <li>평일 저녁 좋아하는 TV</li>
+          <li>해질녘 미사리 한강변 뚝방길</li>
+        </ul>
+      </div>
+      <div class="value-card">
+        <span class="num">5</span>
+        <div class="name">몸과 마음의 건강</div>
+        <span class="name-en">Wellness</span>
+        <p class="meaning">건강한 몸과 평온한 마음이 모든 행복의 기반</p>
+        <ul>
+          <li>함께 운동·등산·산책</li>
+          <li>스트레스를 그날 풀어냄</li>
+          <li>정기 건강검진</li>
+          <li>충분히 자고 무리하지 않음</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 11: 03 Life Domains ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">03 · Life Domains</span>
+    <h1>우리가 가꾸는 영역</h1>
+    <p class="lead">소담이네는 다섯 가지 영역에 에너지를 쏟는다. 각 영역마다 우리만의 운영 방식이 있다.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>① 건강 (Wellness)</h4>
+        <p><em style="color: var(--wood);">"건강한 몸과 평온한 마음이 충만한 순간을 만든다."</em></p>
+        <ul>
+          <li>정기적으로 함께 산책·등산</li>
+          <li>검단산 등산을 일상의 의례로</li>
+          <li>매년 정기 건강검진</li>
+          <li>스트레스를 그날 풀어냄</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>② 관계 (Relationship)</h4>
+        <p><em style="color: var(--wood);">"좋은 관계는 의식적으로 가꿔야 한다."</em></p>
+        <ul>
+          <li>매일 산책하며 소소한 대화</li>
+          <li>평일 저녁 함께하는 시간</li>
+          <li>의견이 달라도 솔직히 말함</li>
+          <li>양가에 균형 잡힌 시간·정성</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>③ 휴식·놀이 (Play)</h4>
+        <p><em style="color: var(--wood);">"잘 노는 가족이 잘 사는 가족이다."</em></p>
+        <ul>
+          <li>평일 저녁 TV (나는 솔로 등)</li>
+          <li>해질녘 미사리 뚝방길 산책</li>
+          <li>매년 여름 제주 엘리시안</li>
+          <li>등산 후 유천냉면 보상</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>④ 성장 (Growth)</h4>
+        <p><em style="color: var(--wood);">"한 명만 앞서가지 않도록 속도를 맞춘다."</em></p>
+        <ul>
+          <li>서로의 성장에 시간·돈 투자</li>
+          <li>정기적으로 서로의 변화 대화</li>
+          <li>처지면 함께 끌어올림</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h4>⑤ 경제 (Money) — 4가지 원칙</h4>
+      <p style="font-style: italic; color: var(--wood); margin-bottom: 0.8em;">"돈은 목적이 아니라 '오늘도 소담하게' 살기 위한 기반이다."</p>
+      <ul>
+        <li><strong>균형 (50/50)</strong> — 저축 50% : 소비 50%</li>
+        <li><strong>공동 관리</strong> — 비밀 통장 없음, 모든 수입·지출 투명 공유</li>
+        <li><strong>큰 지출은 부부 합의</strong> — 500만원 이상 무조건 합의 후 진행</li>
+        <li><strong>저축 목표 2가지</strong> — ① 자연 가까운 주거공간 ② 은퇴 자금</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 12: 04 Members ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">04 · Members</span>
+    <h1>우리는 누구인가</h1>
+
+    <h3>호칭 — 살아있는 애칭의 문화</h3>
+    <p>대외적으로는 <strong>"여보"</strong>로 부르지만, 둘만의 시간에는 무수한 애칭을 사용한다. <em style="color: var(--wood);">호칭은 고정되어 있지 않고, 지금도 계속 추가되는 중이다.</em></p>
+    <table>
+      <tr><th>중렬 → 선아</th><td>여보 / 켜붕이 / 여붕이 / 염둥이 / 최애덤 …</td></tr>
+      <tr><th>선아 → 중렬</th><td>여보 / 오빠 / 깨봉이 / 여봉여봉이 / 김귀염 / 김염둥 …</td></tr>
+    </table>
+
+    <h3>구성원 프로필</h3>
+    <div class="grid-2">
+      <div class="card">
+        <h4>김중렬 (남편)</h4>
+        <p><strong>회사원 · HR팀장</strong></p>
+        <p><strong>강점</strong> 부드러운 단단함, 근면성실, 이성적, 유머러스, 사회성·공감능력</p>
+        <p><strong>좋아하는 것</strong> 아내, 스타크래프트, 영화, 운동, 우주 이야기, 잠, 먹기</p>
+        <p><strong>기여</strong> 돈 벌어오기 · 아내 귀여워하기 · 밥 잘 먹기 · 함께하는 시간 · 운동</p>
+      </div>
+      <div class="card">
+        <h4>최선아 (아내)</h4>
+        <p><strong>공인중개사 · 소속공인중개사</strong></p>
+        <p><strong>강점</strong> 근면성실, 유연한 사고, 유머, 사회성, 상상력, 감수성, 공감능력</p>
+        <p><strong>좋아하는 것</strong> 남편, 해리포터, 우주, SF, 활동적인 것</p>
+        <p><strong>기여</strong> 가정의 재무부장관 · 귀여움 담당 · 양가 어른 챙기기</p>
+      </div>
+    </div>
+
+    <h3>역할 분담</h3>
+    <table>
+      <tr><th>요리</th><td>선아 (메인) · 중렬 (라면, 밥, 물, 고기 굽기)</td></tr>
+      <tr><th>청소</th><td>선아 (전반) · 중렬 (화장실)</td></tr>
+      <tr><th>빨래 · 장보기</th><td>함께</td></tr>
+      <tr><th>분리수거</th><td>중렬</td></tr>
+      <tr><th>여행 짐 · 재정 · 양가 어른</th><td>선아 (메인, 중렬과 함께)</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== Slide 13: DNA + 보완 분석 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">04 · Members</span>
+    <h1>소담이네 DNA &amp; 보완관계</h1>
+
+    <h3>5가지 공통점 — 소담이네 DNA</h3>
+    <table>
+      <tr><th>우주·SF에 끌린다</th><td>코스모스, 해리포터·SF — 일상을 넘어 더 큰 것을 상상</td></tr>
+      <tr><th>유머러스하다</th><td>무거운 상황도 웃음으로 풀어냄</td></tr>
+      <tr><th>사회성이 좋다</th><td>양가·친척·친구와의 관계를 잘 가꿈</td></tr>
+      <tr><th>공감능력이 높다</th><td>서로의 감정을 잘 읽고 받아줌</td></tr>
+      <tr><th>근면성실하다</th><td>각자의 자리에서 책임을 다함</td></tr>
+    </table>
+
+    <h3>성격유형 검사가 보여주는 보완관계</h3>
+    <table>
+      <tr><th>영역</th><th>김중렬 (TCI)</th><th>최선아 (U&amp;I 탐구이상형)</th></tr>
+      <tr><td>안정 vs 모험</td><td>침착·낙천·전통·원칙</td><td>모험·예측 불가의 자유로움</td></tr>
+      <tr><td>분석 vs 상상</td><td>분석적·합리적·효율</td><td>상상력 풍부, 새로운 것 추구</td></tr>
+      <tr><td>현실 vs 탐구</td><td>현실적 가치(권력·재력)</td><td>지적 도전·생각 요구되는 활동</td></tr>
+      <tr><td>신뢰감</td><td>타인에게 신뢰감·안정감을 줌</td><td>"중심을 잡아주면" 잠재력 발휘</td></tr>
+    </table>
+
+    <blockquote class="big center">
+      중렬은 선아의 "중심"이 되어주고,<br>
+      선아는 중렬의 분석에 새로운 가능성을 더한다.<br>
+      <span style="color: var(--moss-dark); font-weight: 700;">두 사람의 결합은 1+1=2가 아니라 1+1=3이 되는 보완 구조다.</span>
+    </blockquote>
+
+    <div class="highlight-box">
+      <h4>공통 약점 — 그래서 절대 약속이 필요하다</h4>
+      <p style="margin: 0;">두 사람 모두 거절·비난에 취약. → 5-2의 절대 약속 <em style="color: var(--wood);">"그 하루 안에 풀고, 한 침대에서 잔다"</em>가 정확히 이 약점의 안전장치 역할을 한다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 14: 05 The Way — 의사결정·갈등·리듬 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">05 · The Way</span>
+    <h1>우리가 살아가는 방식</h1>
+
+    <h3>의사결정 — 합의제 + 도메인 존중</h3>
+    <div class="grid-3">
+      <div class="card">
+        <h4>완전 합의제</h4>
+        <p>모든 결정은 두 사람의 동의 위에서. 한 명이 강하게 반대하면 멈춘다.</p>
+      </div>
+      <div class="card">
+        <h4>충분한 대화</h4>
+        <p>일상에서 대화량이 많아 회의가 아닌 확인에 가깝다.</p>
+      </div>
+      <div class="card">
+        <h4>도메인 존중</h4>
+        <p>재정 = 선아, 운동 = 함께, 양가 = 선아 메인 등 위임.</p>
+      </div>
+    </div>
+
+    <h3>갈등 — 두 가지 절대 약속</h3>
+    <blockquote class="big center">
+      ① 그 하루가 가기 전에는 꼭 이야기하고 푼다.<br>
+      ② 아무리 화가 나도 잠은 한 침대에서 잔다.
+    </blockquote>
+
+    <h3>일상 리듬 — 요일별 의례</h3>
+    <table>
+      <tr><th>월·수·금</th><td>퇴근 후 함께 수영 — 몸과 마음의 건강</td></tr>
+      <tr><th>화·목</th><td>함께 저녁 + 산책 or 장보기 — 일상의 리추얼</td></tr>
+      <tr><th>주말</th><td>등산·산책·외출 (제대로 놀기) — 자연·휴식</td></tr>
+    </table>
+    <p><strong>모든 평일 저녁의 공통 의례</strong> — 함께 저녁 식사 + 좋아하는 TV 시청 (나는 솔로, 이혼숙려캠프).</p>
+  </div>
+</section>
+
+<!-- ===== Slide 15: 7가지 약속 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">05 · The Way</span>
+    <h1>소담이네 7가지 약속</h1>
+    <p class="lead">소담이네가 일상에서 절대 양보하지 않는 일곱 가지 약속.</p>
+
+    <ul class="promise-list">
+      <li><span class="num">01</span><span>그 하루가 가기 전에는 꼭 이야기하고 푼다.</span></li>
+      <li><span class="num">02</span><span>아무리 화가 나도 잠은 한 침대에서 잔다.</span></li>
+      <li><span class="num">03</span><span>500만원 이상의 큰 지출은 무조건 부부 합의 후 한다. 비밀 통장은 만들지 않는다.</span></li>
+      <li><span class="num">04</span><span>한 명만 앞서가지 않도록 함께 자라는 속도를 맞춘다.</span></li>
+      <li><span class="num">05</span><span>양가에 대한 시간·정성·경제적 지원은 균형을 유지한다.</span></li>
+      <li><span class="num">06</span><span>각자의 도메인은 신뢰하고 위임한다. 단, 정보는 투명하게 공유한다.</span></li>
+      <li><span class="num">07</span><span>매년 여름 제주 엘리시안에 가고, 등산 후엔 유천냉면을 먹는다 — 우리만의 의례를 지킨다.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== Slide 16: 4대 수칙 ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">05 · The Way</span>
+    <h1>연애시절부터 이어진 4대 수칙</h1>
+    <p class="lead">결혼 전부터 우리가 함께 살아가는 방식이었다. 미션·비전·핵심가치는 이 4가지가 만든 결과물이다.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>① 대화 — 정보 격차 만들지 않기</h4>
+        <ul>
+          <li>일상공유 &amp; Small talk</li>
+          <li>중요 일정은 미리 알려주기</li>
+          <li>배려라는 이름으로 셀프 검열하지 않기</li>
+        </ul>
+        <em class="hint">상대방이 궁금해하다가 혼자 상상하지 않도록</em>
+      </div>
+      <div class="card">
+        <h4>② 동참 — 함께의 영역 확장</h4>
+        <ul>
+          <li>해보지 않은 것도 상대 제안 시 동참</li>
+          <li>해보고 "아니다" 싶으면 잘 거절</li>
+        </ul>
+        <em class="hint">신나고 즐겁고 풍요로운 삶을 위해</em>
+      </div>
+      <div class="card">
+        <h4>③ 스스로를 잘 돌보기</h4>
+        <ul>
+          <li>나를 걱정하는 사람이 있음을 기억</li>
+          <li>잘 먹이고, 잘 재우고, 잘 씻기고</li>
+        </ul>
+        <em class="hint">몸도 마음도 건강한 삶을 위해</em>
+      </div>
+      <div class="card">
+        <h4>④ 싫어하는 것 안하기</h4>
+        <ul>
+          <li>합리적 이유라면 지켜주기</li>
+          <li>미리 얘기 + 대화로 결정 (모르면 못 지킴)</li>
+        </ul>
+        <em class="hint">존중하고 신경 써주는 만남을 위해</em>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 17: 06 Rules & Rituals ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">06 · Rules &amp; Rituals</span>
+    <h1>약속과 의례</h1>
+
+    <h3>연중 의례</h3>
+    <table>
+      <tr>
+        <th>결혼기념일 (10/15)</th>
+        <td><strong>1순위</strong> 제주 엘리시안 (신혼여행지) / <strong>차선</strong> 새로운 장소 / <strong>최후</strong> 집에서 자세한 대화</td>
+      </tr>
+      <tr>
+        <th>각자의 생일</th>
+        <td>편지 + 맛있는 식사 + 원할 경우 커플아이템</td>
+      </tr>
+      <tr>
+        <th>양가 명절·경조사</th>
+        <td>경조사는 양가 모두 / 명절은 양가 일정에 유연하게 / 평소에도 자주 왕래</td>
+      </tr>
+      <tr>
+        <th>매년 여름 휴가</th>
+        <td>제주도 엘리시안 리조트 테라스 (충만한 순간의 핵심 의례)</td>
+      </tr>
+    </table>
+
+    <h3>컬쳐덱 점검 의례 — 메타-루틴</h3>
+    <div class="grid-2">
+      <div class="card">
+        <h4>수시 — 주 원칙</h4>
+        <p>필요할 때마다 자유롭게 함께 다시 보고 대화. 일상 대화량이 많은 소담이네 스타일.</p>
+      </div>
+      <div class="card">
+        <h4>연 1회 — 권장 보완</h4>
+        <p>결혼기념일 시즌(10/15)에 컬쳐덱 전체를 함께 읽고 1년치 업데이트.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 18: 07 Design System ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="section-tag">07 · Design System</span>
+    <h1>우리 집의 상징</h1>
+    <p class="lead">컨셉은 "자연 속 일상". 검단산·미사리·조정경기장이라는 자연 무대와 소담함이라는 가치를 시각으로 표현한다.</p>
+
+    <h3>Family Color — 자연 속 일상</h3>
+    <div class="palette">
+      <div class="swatch" style="background:#5B7553">
+        <span class="name">Moss Green</span>
+        <span class="hex">#5B7553</span>
+      </div>
+      <div class="swatch" style="background:#708B5C">
+        <span class="name">Sage Green</span>
+        <span class="hex">#708B5C</span>
+      </div>
+      <div class="swatch" style="background:#8B6F47">
+        <span class="name">Wood Brown</span>
+        <span class="hex">#8B6F47</span>
+      </div>
+      <div class="swatch light" style="background:#DCC9A6">
+        <span class="name">Warm Beige</span>
+        <span class="hex">#DCC9A6</span>
+      </div>
+      <div class="swatch light" style="background:#F5EFE0; border:1px solid #DCC9A6">
+        <span class="name">Soft Cream</span>
+        <span class="hex">#F5EFE0</span>
+      </div>
+      <div class="swatch" style="background:#2D3A2A">
+        <span class="name">Charcoal</span>
+        <span class="hex">#2D3A2A</span>
+      </div>
+    </div>
+
+    <h3>Family Font</h3>
+    <table>
+      <tr><th>제목 (한글)</th><td>마루 부리 / 나눔명조</td></tr>
+      <tr><th>제목 (영문)</th><td>EB Garamond</td></tr>
+      <tr><th>본문 (한글)</th><td>프리텐다드 / Noto Sans KR</td></tr>
+      <tr><th>본문 (영문)</th><td>Inter</td></tr>
+    </table>
+
+    <h3>Family Symbol</h3>
+    <div style="text-align:center; margin: 1.4em 0;">
+      <img src="소담이네_로고_시안A_잎사귀.svg" alt="소담이네 로고" style="width: clamp(220px, 30vw, 340px); filter: drop-shadow(0 6px 24px rgba(91, 117, 83, 0.15));">
+    </div>
+    <table>
+      <tr><th>가운데 큰 잎</th><td>부부 = 가족의 중심</td></tr>
+      <tr><th>양옆 작은 잎</th><td>양가 가족 (그리고 미래의 가족)</td></tr>
+      <tr><th>아래 줄기</th><td>뿌리 = 안정과 성장의 기반</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== Slide 19: Closing ===== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="closing">
+      <span class="section-tag">Closing</span>
+      <img src="소담이네_로고_시안A_잎사귀.svg" alt="소담이네 로고" class="small-logo">
+      <h1 style="text-align: center; margin-bottom: 1em;">마치며</h1>
+
+      <div class="farewell">
+        소담이네 컬쳐덱은 완성된 것이 아니라 <strong>살아있는 문서</strong>다.<br><br>
+        우리는 이 문서를 통해 매일 우리가 누구인지 잊지 않을 것이고,<br>
+        큰 결정 앞에서 흔들리지 않을 것이며,<br>
+        자녀가 생긴다면 우리의 가치관을 자연스럽게 전할 것이다.
+      </div>
+
+      <div class="big-slogan" style="padding: 0.5em;">
+        <div class="ornament">
+          <span class="line"></span>
+          <span class="dot"></span>
+          <span class="line"></span>
+        </div>
+        <div class="signature">"작은 순간, 큰 행복"</div>
+        <div class="author">— 소담이네, 김중렬 · 최선아</div>
+      </div>
+
+      <table class="meta-table">
+        <tr><th>작성 시작</th><td>2026년 5월 3일</td></tr>
+        <tr><th>최종 업데이트</th><td>2026년 5월 6일</td></tr>
+        <tr><th>다음 점검</th><td>2026년 10월 15일 (결혼기념일)</td></tr>
+        <tr><th>공동 작성</th><td>김중렬 · 최선아</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<nav class="nav">
+  <button id="prev" aria-label="이전">←</button>
+  <span class="counter" id="counter">1 / 19</span>
+  <button id="next" aria-label="다음">→</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function go(idx) {
+    if (idx < 0 || idx >= total) return;
+    slides[cur].classList.remove('active');
+    if (idx < cur) slides[cur].classList.add('prev');
+    else slides[cur].classList.remove('prev');
+    cur = idx;
+    slides[cur].classList.remove('prev');
+    slides[cur].classList.add('active');
+    slides[cur].scrollTop = 0;
+    counter.textContent = (cur + 1) + ' / ' + total;
+    progress.style.width = ((cur + 1) / total * 100) + '%';
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = cur === total - 1;
+  }
+
+  prevBtn.addEventListener('click', () => go(cur - 1));
+  nextBtn.addEventListener('click', () => go(cur + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(total - 1);
+  });
+
+  // Touch swipe
+  let touchStartX = 0;
+  let touchStartY = 0;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].clientX;
+    touchStartY = e.changedTouches[0].clientY;
+  });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) go(cur + 1);
+      else go(cur - 1);
+    }
+  });
+
+  // Initial
+  go(0);
+</script>
+
+</body>
+</html>
